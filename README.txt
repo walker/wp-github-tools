@@ -2,8 +2,8 @@
 Contributors: vilmosioo
 Tags: github, tool, widget, repository, commit, gist
 Requires at least: 3.3
-Tested up to: 3.8
-Stable tag: 1.2.3
+Tested up to: 4.2.2
+Stable tag: 1.2.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4K8F8YQMP84CJ
@@ -91,8 +91,9 @@ Send any questions directly to [me](http://twitter.com/vilmosioo)!
 
 == Changelog ==
 
-= 1.2 =
+= 1.2.x =
 * 	Added Chart functionality (beta) that allows users to display their commit activity using a graph.
+*   Enabled automatic build to deliver updates more quickly.
 
 = 1.1 =
 * 	Using OAuth to connect to Github
