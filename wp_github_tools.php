@@ -3,7 +3,7 @@
 Plugin Name: WP GitHub Tools
 Plugin URI: https://github.com/vilmosioo/Github-Tools-for-WordPress
 Description: A plugin that creates live updates for any GitHub repository. 
-Version: 1.2.6
+Version: 1.3.1
 Author: Vilmos Ioo
 Author URI: http://vilmosioo.co.uk
 Author Email: ioo.vilmos@gmail.com
@@ -32,6 +32,7 @@ define('VI_GITHUB_COMMITS_URL', plugin_dir_url(__FILE__));
 define('VI_VERSION', get_bloginfo( 'version' ));
 
 require_once(VI_GITHUB_COMMITS_DIR.'includes/WP_Github_Tools_Commits_Widget.php');
+require_once(VI_GITHUB_COMMITS_DIR.'includes/WP_Github_Tools_Releases_Widget.php');
 require_once(VI_GITHUB_COMMITS_DIR.'includes/WP_Github_Tools_API.php');
 require_once(VI_GITHUB_COMMITS_DIR.'includes/WP_Github_Tools_Options.php');
 require_once(VI_GITHUB_COMMITS_DIR.'includes/WP_Github_Tools_Cache.php');
@@ -74,6 +75,8 @@ class WP_Github_Tools {
 		add_shortcode('gist', array( &$this, 'print_gist' ));
 		// create commits shortcode
 		add_shortcode('commits', array( &$this, 'print_commits' ));
+		// create releases shortcode
+		add_shortcode('releases', array( &$this, 'print_releases' ));
 		// create chart shortcode
 		add_shortcode('chart', array( &$this, 'display_chart' ));
 		// create commits widget
@@ -210,6 +213,34 @@ class WP_Github_Tools {
 		return $s;
 	}
 
+	// create custom shortcodes
+	function print_releases( $atts, $content = null ) {
+		extract(shortcode_atts(array('repository' => '', 'count' => '5', 'title' => '', 'class' => ''), $atts));
+		if(!isset($repository) || empty($repository)) return;
+
+		$s = "<ul class='github-releases github-releases-$repository $class'>";
+		$s = empty($title) ? $s : "<h3>$title</h3>".$s; 
+		$repositories = WP_Github_Tools_Cache::get_cache();
+		$github = $repositories['user']['login'];
+		if(!isset($repositories) || !is_array($repositories)) return;
+		$repositories = $repositories['repositories'];
+		if(!is_array($repositories)) return;
+		$releases = $repositories[$repository]['releases'];
+		if(!is_array($releases)) return;
+		$releases = array_slice($releases, 0, $count);
+		foreach($releases as $release){
+			$url = $release['html_url'];
+			$name = $release['tag_name'];
+			$date = date("d M Y", strtotime($release['published_at']));
+			$msg = $commit['body'];
+			
+			$s .= "<li class='release'><span class='date'>$date</span> <a href='$url' title='$msg'><strong>$name</strong> $msg</a></li>";
+		}	
+		$s .= '</ul>';
+
+		return $s;
+	}
+
 	// display activity chart for a repository
 	function display_chart($atts, $content = null){
 		extract(shortcode_atts(array('repository' => '', 'id' => 'github_chart_'.WP_Github_Tools::$INDEX++, 'title' => '', 'width' => '', 'class' => '', 'height' => '300', 'color' => '#f17f49', 'background' => 'transparent', 'count' => 30), $atts));
@@ -303,6 +334,7 @@ class WP_Github_Tools {
 
 	function register_widgets(){
 		register_widget( 'WP_Github_Tools_Commits_Widget' ); 
+		register_widget( 'WP_Github_Tools_Releases_Widget' ); 
 	}
 		
 		// Displays a welcome message to prompt the user to enter a github username
