@@ -1,7 +1,7 @@
 <?php
 /*
 * Github API helper class
-* 
+*
 * Uses the github API v3 to retrieve public gists, repos or commits for a specific user
 */
 class WP_Github_Tools_API{
@@ -35,6 +35,12 @@ class WP_Github_Tools_API{
 
 		$base = "https://api.github.com/";
 		$response = wp_remote_get($base . $url. '?access_token='.$access_token, array( 'sslverify' => false ));
+		// if($url=='user/repos') {
+		// 	echo '<pre>';
+		// 	var_dump($response);
+		// 	echo '</pre>';
+		// 	exit();
+		// }
 		if(is_wp_error($response) || $response['response']['code'] != 200) {
 			return array();
 		}

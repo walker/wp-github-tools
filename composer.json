@@ -1,0 +1,7 @@
+{
+    "name": "wp-plugins/wp-github-tools",
+    "description": "WP Github Tools improvement.",
+    "require": {
+        "michelf/php-markdown": "^1.6"
+    }
+}
